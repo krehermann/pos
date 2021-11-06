@@ -1,7 +1,7 @@
 import time
 import uuid
 
-class transaction:
+class Transaction:
     """ Transaction class
     """
     def __init__(self,senderPublicKey, recieverPublicKey,amount, type):
