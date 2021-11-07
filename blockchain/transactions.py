@@ -1,5 +1,7 @@
 import time
 import uuid
+import json
+
 
 class Payload:
     
@@ -28,10 +30,12 @@ class Transaction:
     @property
     def signature(self):
         return self._signature
-        
+
     @signature.setter 
     def signature(self, value):
         self._signature = value
 
     def toJSON(self):
-        return self.__dict__
+        #TODO this serializes private _paload. Seems like it ought to serialize payload instead
+        return json.dumps(self, default=lambda x: x.__dict__)
+        

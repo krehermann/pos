@@ -1,3 +1,4 @@
+from typing import List
 
 import transactions as txn
 class Pool:
@@ -12,3 +13,6 @@ class Pool:
     
     def length(self) -> int:
         return len(self._transactions.keys())
+
+    def transactions(self) -> List[txn.Transaction]:
+        return self._transactions.values()

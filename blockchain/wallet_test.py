@@ -1,4 +1,5 @@
 import wallet
+import utils
 
 def test_wallet():
 
@@ -17,7 +18,7 @@ def test_signature():
     data = "123"
     s = w.sign(data)
     print(s)
-    assert wallet.signatureValidate(s,data,w.publicKey) == True
+    assert utils.signatureValidate(s,data,w.publicKey) == True
 
 def test_new_transaction():
     w = wallet.Wallet()
