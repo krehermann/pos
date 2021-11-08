@@ -30,6 +30,10 @@ class Block:
         self._payload = payload #Payload(transactions,forger,previousHash)
         self.signature = ''
 
+    @property
+    def payload(self):
+        return self._payload
+
     def toJSON(self):
         return json.dumps(self, default=lambda x: x.__dict__)
         
@@ -39,3 +43,17 @@ class Block:
         signature: string. rsa signature of the block. todo: validate format?
         """
         self.signature = signature
+
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, Block):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+
+        return self.payload.time == o.payload.time and \
+            self.payload.transactions == o.payload.transactions and \
+                self.payload.forger == o.payload.forger and \
+                    self.payload.previousHash == o.payload.previousHash 
+
+
+    def equals(self, other) -> bool:
+        return self.payload == other.payload

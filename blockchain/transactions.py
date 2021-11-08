@@ -14,7 +14,7 @@ class Payload:
         self.id = uuid.uuid4().hex
 
     def toJSON(self):
-        return self.__dict__
+        return json.dumps(self, default=lambda x: x.__dict__)
 
 class Transaction:
     """ Transaction class

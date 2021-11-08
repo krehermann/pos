@@ -1,14 +1,15 @@
 #from Crypto.Hash import SHA256
 from Crypto.Hash import SHA256
-import pickle
-
+import json
+#import bytes
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
-def hash(data):
+def hash(data) -> SHA256.SHA256Hash:
     # is pickle backward compatable?
-    bytes = pickle.dumps(data)
-    return SHA256.new(bytes)
+    jsonStr = json.dumps(data, default=lambda x: x.__dict__)
+    
+    return SHA256.new(bytes(jsonStr, 'utf-8'))
 
 def signatureValidate(signature: str, data, publicKey:str) -> bool:
     signatureBytes = bytes.fromhex(signature)
