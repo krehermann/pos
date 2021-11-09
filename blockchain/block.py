@@ -10,9 +10,9 @@ class Payload:
 
     transactions: list of transactions
     forger: string. public key of entity that created the block. TODO this should be validated and/or not a string
-    previousHash: string. value of hash of previous block. TODO validation of some sort
+    previousHash: string. hexdigest of hash of previous block. TODO validation of some sort
     """
-    def __init__(self,transactions:List[txn.Transaction], forger:str, previousHash) -> None:
+    def __init__(self,transactions:List[txn.Transaction], forger:str, previousHash:str) -> None:
         self.transactions = transactions
         self.forger = forger
         self.previousHash = previousHash

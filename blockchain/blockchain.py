@@ -2,10 +2,12 @@
 import block
 import utils
 from datetime import datetime, timezone
+import accounts
+import transactions
 
 GENESIS_FORGER = "genesis"
 GENESIS_ID = "1234"
-GENESIS_TIMESTAMP = 0#datetime( 2021, 1, 1, 0, 0, 0, tzinfo=timezone.utc ).time()
+GENESIS_TIMESTAMP = datetime( 2021, 1, 1, 0, 0, 0, tzinfo=timezone.utc ).timestamp()
 
 
 def genesis() -> block.Block:
@@ -20,7 +22,10 @@ class Blockchain:
     def __init__(self) -> None:
         self._genesis = genesis()
         self.blocks = [self._genesis]
-   
+        # this seems like a weird model where the account are kept seperately from the blocks
+        # TODO learn more about real world account models
+        self.accountBook = accounts.AccountBook()
+
     @property
     def genesis(self):
         return self._genesis
@@ -38,3 +43,7 @@ class Blockchain:
 
     def length(self) -> int :
         return len(self.blocks)
+
+    def transactionCovered(self, transaction:transactions.Transaction):
+        if transaction.type == transactions.TransactionType.TRANSFER:
+            return self.accountBook.get(transaction.payload.senderPublicKey).balance >= transaction.payload.amount 

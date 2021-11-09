@@ -1,7 +1,7 @@
 import time
 import uuid
 import json
-
+from enum import Enum
 
 class Payload:
     
@@ -16,10 +16,14 @@ class Payload:
     def toJSON(self):
         return json.dumps(self, default=lambda x: x.__dict__)
 
+class TransactionType(Enum):
+    TRANSFER = 1
+
+
 class Transaction:
     """ Transaction class
     """
-    def __init__(self,senderPublicKey, recieverPublicKey,amount, type):
+    def __init__(self,senderPublicKey, recieverPublicKey,amount, type: TransactionType):
         self._payload = Payload(senderPublicKey,recieverPublicKey,amount,type)
         self._signature = ''
 
