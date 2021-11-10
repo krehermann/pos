@@ -14,4 +14,15 @@ def test_add_txn():
     with pytest.raises(ValueError) as e_info:
         pool.addTransaction(txn1)
 
-    
+def test_delete():
+    pool = txpool.Pool()
+    txn1 = txn.Transaction("sender", "reciever", 10, 1)
+    txn2 = txn.Transaction("sender", "reciever", 20, 1)
+    pool.addTransaction(txn1)
+    pool.addTransaction(txn2)
+    assert pool.length() == 2
+    pool.delete([txn1])
+    assert pool.length() ==1
+    with pytest.raises(KeyError) as e_info:
+        pool.get(txn1)
+    assert pool.get(txn2) is not None

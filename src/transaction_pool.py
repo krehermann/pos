@@ -15,4 +15,13 @@ class Pool:
         return len(self._transactions.keys())
 
     def transactions(self) -> List[txn.Transaction]:
-        return self._transactions.values()
+        return list(self._transactions.values())
+
+    def delete(self, transactions:List[txn.Transaction]):
+        for tx in transactions:
+            # delete tx
+            self._transactions.pop(tx.id,None)
+    
+    def get(self, transaction: txn.Transaction) -> txn.Transaction:
+        return self._transactions[transaction.payload.id]
+            

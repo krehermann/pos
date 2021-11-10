@@ -18,7 +18,7 @@ class Payload:
 
 class TransactionType(Enum):
     TRANSFER = 1
-
+    EXCHANGE = 2
 
 class Transaction:
     """ Transaction class
@@ -32,9 +32,17 @@ class Transaction:
         return self._payload
 
     @property
+    def id(self):
+        return self._payload.id
+        
+    @property
     def signature(self):
         return self._signature
 
+    @property
+    def type(self):
+        return self._payload.type
+        
     @signature.setter 
     def signature(self, value):
         self._signature = value
@@ -43,3 +51,7 @@ class Transaction:
         #TODO this serializes private _paload. Seems like it ought to serialize payload instead
         return json.dumps(self, default=lambda x: x.__dict__)
         
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, Transaction):
+            return False
+        return self.payload.id == o.payload.id
