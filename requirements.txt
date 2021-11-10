@@ -2,7 +2,7 @@ jsonpickle==1.4.1
 json5==0.8.4
 Flask==1.1.1
 Flask-Classful==0.14.2
-p2pnetwork==0.0.3
+p2pnetwork==1.1.0
 requests==2.22.0
 pycryptodome==3.10.1
 
