@@ -16,20 +16,19 @@ def signatureValidate(signature: str, data, publicKey:str) -> bool:
     signatureBytes = bytes.fromhex(signature)
     dataHash = hash(data)
     publicKeyRSA = RSA.importKey(publicKey)
-    return  PKCS1_v1_5.new(publicKeyRSA).verify(dataHash,signatureBytes)
+    isValid = False
+    try:
+        PKCS1_v1_5.new(publicKeyRSA).verify(dataHash,signatureBytes)
+        isValid = True
+    except ValueError as ve:
+        print("invalid transaction")
+    return isValid
 
 def encode(data) -> str:
-    #jsonpickle.
-    #return pickle.dumps(data)
     jsonpickle.set_encoder_options('simplejson')
     return jsonpickle.encode(data, unpicklable=True)
-    #return json.dumps(data)
+
 
 def decode(data:str, classes=None):
-    #return pickle.loads(data)
-    #print("trying to decode ", data)
-    #return jsonpickle.decode(data, classes=classes, keys=True)
-   # if isinstance(data,dict):
-    #    return data.
     jsonpickle.set_decoder_options('simplejson')
-    return json.loads(data)
+    return jsonpickle.loads(data)

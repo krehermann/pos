@@ -7,19 +7,19 @@ def test_p2p_inbound():
     soc.bind(('', 0))
     port =soc.getsockname()[1]
     soc.close()
-    node = p2p.P2PNode('localhost',50050)
+    node = p2p.P2PNode('localhost',port)
 
     soc2 = socket(AF_INET, SOCK_STREAM)
     soc2.bind(('', 0))
     port2 =soc2.getsockname()[1]
     soc2.close()
-    node2 = p2p.P2PNode('localhost',50051)
+    node2 = p2p.P2PNode('localhost',port2)
 
     soc3 = socket(AF_INET, SOCK_STREAM)
     soc3.bind(('', 0))
     port3 =soc3.getsockname()[1]
     soc3.close()
-    node3 = p2p.P2PNode('localhost',50052)
+    node3 = p2p.P2PNode('localhost',port3)
 
     node.start()
     node2.start()
