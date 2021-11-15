@@ -6,5 +6,5 @@ import server
 
 if __name__ == '__main__':
     print('running server server')
-    server = server.Server(data="stuff")
+    server = server.Server()
     server.start()

@@ -5,13 +5,13 @@ class NodeServer:
     """
     Class composed of p2p node and api server
     """
-    def __init__(self, p2pnode:Node =None, apiServer=None) -> None:
+    def __init__(self, p2pnode:Node =None, apiServer:server.Server=None) -> None:
         if p2pnode is not None:
             self._node = p2pnode
         else:
             self._node=Node()
         if apiServer is not None:
-            self._apisServer = apiServer
+            self._apiServer = apiServer
         else:
             self._apiServer = server.Server()
 

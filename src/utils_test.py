@@ -13,4 +13,3 @@ def test_roundtrip():
     dd = utils.decode(e)
     print(dd)
     assert payload == dd
-    assert payload == 3
