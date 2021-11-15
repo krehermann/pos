@@ -5,6 +5,7 @@ import utils
 from datetime import datetime, timezone
 import accounts
 import transactions as txn
+import json
 
 class Chain:
     def __init__(self) -> None:
@@ -71,3 +72,7 @@ class Chain:
     #this seems weird and hacky
     def addAccount(self, account):
         self._accountBook.create(account)
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda x: x.__dict__)
+        

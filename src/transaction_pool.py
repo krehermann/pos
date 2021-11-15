@@ -1,4 +1,5 @@
 from typing import List
+import json
 
 import transactions as txn
 class Pool:
@@ -25,3 +26,5 @@ class Pool:
     def get(self, transaction: txn.Transaction) -> txn.Transaction:
         return self._transactions[transaction.payload.id]
             
+    def toJSON(self):
+        return json.dumps(self, default=lambda x: x.__dict__)
