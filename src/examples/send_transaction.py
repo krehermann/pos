@@ -12,7 +12,7 @@ if __name__ == "__main__":
     exchange = Wallet()
 
     print("alice pub", alice.publicKey)
-    txn = exchange.newTransaction(alice.publicKey, 10, "EXCHANGE")#TransactionType.EXCHANGE)
+    txn = exchange.newTransaction(alice.publicKey, 10, TransactionType.EXCHANGE)
 
     url = "http://127.0.0.1:5001/transaction"
     msg = {"transaction": utils.encode(txn)}

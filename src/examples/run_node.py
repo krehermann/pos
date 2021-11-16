@@ -7,7 +7,7 @@ import time
 import argparse
 import node
 import server
-
+from p2p import SimplePeer
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -20,8 +20,14 @@ if __name__ == '__main__':
     parser.add_argument('--apiPort',  type=int,
                     help='an integer for the accumulator',default=5000) 
 
+    parser.add_argument('--peerHost', type=str, default=None)
+    parser.add_argument('--peerPort', type=int, default=None)
+
     args = parser.parse_args()
-    n = node.Node(host=args.p2phost, port=args.p2pport)
+    bootstrapPeer = None
+    if args.peerHost is not None and args.peerPort is not None:
+         bootstrapPeer = SimplePeer(args.peerHost,args.peerPort, "")
+    n = node.Node(host=args.p2phost, port=args.p2pport,peerHost=args.peerHost, peerPort=args.peerPort,debug=True)
     s = server.Server(host=args.apiHost, port=args.apiPort)
     ns = nodeServer.NodeServer(p2pnode=n,apiServer=s)
  

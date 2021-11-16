@@ -16,9 +16,11 @@ class Payload:
     def toJSON(self):
         return json.dumps(self, default=lambda x: x.__dict__)
 
-class TransactionType(Enum):
-    TRANSFER = 1
-    EXCHANGE = 2
+class TransactionType(str,Enum):
+    TRANSFER = "TRANSFER"
+    EXCHANGE = "EXCHANGE"
+
+
 
 class Transaction:
     """ Transaction class

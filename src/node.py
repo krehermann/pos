@@ -8,13 +8,13 @@ import blockchain as bc
 import utils
 
 class Node:
-    def __init__(self, host='localhost', port=50050) -> None:
+    def __init__(self, host='localhost', port=50050, peer=None,peerHost=None, peerPort=None, debug=False) -> None:
         self._host = host
         self._port = port
-        self._p2p = p2p.P2PNode(host,port)
+ 
         self._wallet = wallet.Wallet()
-        self._transaction_pool = transaction_pool.Pool()
-
+        self._transaction_pool = transaction_pool.SecurePool()
+        self._p2p = p2p.P2PNode(host,port,txn_pool=self._transaction_pool, peer=peer,peerHost=peerHost, peerPort=peerPort, debug=debug)
         self._blockchain = bc.Chain()
 
 
@@ -26,15 +26,9 @@ class Node:
     def pool(self):
         return self._transaction_pool
 
+    @property
+    def p2p(self):
+        return self._p2p
+
     def start(self):
         self._p2p.start()
-
-    def handleTransaction(self, txn:Transaction) -> bool:
-        wasAdded=False
-        if utils.signatureValidate(txn.signature, txn.payload, txn.payload.senderPublicKey):
-            try:
-                self._transaction_pool.addTransaction(txn)
-                wasAdded = True
-            except ValueError as ve:
-                print("transaction not added ", ve)
-        return wasAdded

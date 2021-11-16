@@ -55,7 +55,9 @@ class Server(FlaskView):
         if not isinstance(txn,Transaction):
             print("decoded message not txn?!")
             return "malformed data", 400
-        nodeToServe.handleTransaction(txn)
+        #nodeToServe.handleTransaction(txn)
+        nodeToServe.pool.addTransaction(txn)
+        nodeToServe.p2p.send_to_nodes(utils.encode(txn))
         return "", 201
 
 
@@ -75,3 +77,4 @@ class TransactionMessage:
 def importAccessbileNode(globalNode):
     global nodeToServe
     nodeToServe = globalNode
+
