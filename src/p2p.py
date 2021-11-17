@@ -1,18 +1,23 @@
 from typing import List
 from  p2pnetwork import node
+from transactions import Transaction
 import utils
 import json
+from transaction_pool import SecurePool
 class P2PNode(node.Node):
      # Python class constructor
-    def __init__(self, host, port, peer=None, id=None, callback=None, max_connections=0, debug=False):
+    def __init__(self, host, port, txn_pool: SecurePool= None,peer=None, peerHost=None, peerPort= None, id=None, callback=None, max_connections=0, debug=False):
         super(P2PNode, self).__init__(host, port, id, callback, max_connections)
         self.debug = debug
-        print("MyPeer2PeerNode: Started")
+ 
         self._initPeer = peer
+        self._peerHost = peerHost
+        self._peerPort = peerPort
         self._host=host
         self._port=port
         self.discoverablePeers= []
-        
+        self._transaction_pool = txn_pool
+
     @property
     def publicHost(self):
         return self._host
@@ -20,10 +25,22 @@ class P2PNode(node.Node):
     def publicPort(self):
         return self._port
     
+    
+    @property
+    def pool(self):
+        return self._transaction_pool
+    @pool.setter
+    def pool(self, p: SecurePool):
+        self._transaction_pool = p
+
     def start(self) -> None:
+        print("MyPeer2PeerNode: Starting...")
         super().start()
-        if self._initPeer is not None:
-            self.bootstrap(self._initPeer)
+
+        #if self._initPeer is not None:
+        if (self._peerHost is not None) and (self._peerHost is not None):
+            self.debug_print("bootstapping")
+            self.connect_with_node(self._peerHost, self._peerPort)
 
     def inbound_node_connected(self, node):
         self.debug_print("inbound_node_connected: " + str(node) +"\n")
@@ -47,12 +64,15 @@ class P2PNode(node.Node):
         if isinstance(data,dict):
             data = json.dumps(data)
         msg = utils.decode(data)
-        if msg["type"] == "HANDSHAKE":
+        if isinstance(msg, Transaction): #msg["type"] == "TRANSACTION":
+            if self.pool.addTransaction(msg):
+                #broadcast to peers. this simple implementation is an echo chamber
+                self.send_to_nodes(data)
+        elif msg["type"] == "HANDSHAKE":
             peers = msg["peers"]
             self.debug_print("HANDSHAKE: peers to connect to:" + str(peers)+ "\n")
             for p in peers:
                 if p["id"] != self.id and p["id"] not in self.nodes_outbound :
-
                     self.connect_with_node(p["host"], p["port"])
 
         elif msg["type"] == "IDENTIFY":
@@ -68,7 +88,8 @@ class P2PNode(node.Node):
 
                 if doAppend: self.discoverablePeers.append(incoming)
                 self.debug_print("IDENTIFY: discoverablePeers now " + str(self.discoverablePeers) +"\n")
- 
+
+
         #except Exception as e:
         #    print(e)
         #    print(data)
@@ -90,6 +111,7 @@ class P2PNode(node.Node):
 
     def bootstrap(self, peer):
         if peer is not None:
+            #self.debug_print(str("bootstraping to peer ", peer))
             self.connect_with_node(peer.host, peer.port)
 
 
@@ -103,7 +125,6 @@ class P2PNode(node.Node):
         """
         payload = {}
         # hack need real messages. debugged this way b/c unknown to me the lib was deserializing data messages.
- 
         payload["type"] ="IDENTIFY"
         payload["reciever"] = {"id": self.id, "host": self.host, "port": self.port}
         m = utils.encode(payload)
@@ -130,6 +151,7 @@ class Message:
     def __init__(self, type, data) -> None:
         self.type = type
         self.data = data
+
 
 class SimplePeer:
     def __init__(self, host, port, id) -> None:

@@ -11,7 +11,7 @@ def test_app():
     exchange = wallet.Wallet()
     forger = wallet.Wallet()
     
-    pool = transaction_pool.Pool()
+    pool = transaction_pool.SecurePool()
     
     #seed alice with 10 tokens
     pool.addTransaction(txn.Transaction(exchange.publicKey,alice.publicKey,
@@ -20,5 +20,5 @@ def test_app():
 
 
     chain = bc.Chain()
-    block1 = block.Block(block.Payload(chain.listCoveredTransactions(),forger.publicKey,chain.currentBlockHash()))
+    block1 = block.Block(block.Payload(chain.listCoveredTransactions(pool.transactions()),forger.publicKey,chain.currentBlockHash()))
     chain.addBlock(block1)

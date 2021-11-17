@@ -2,6 +2,8 @@ import transactions as txn
 import transaction_pool as txpool
 import pytest
 
+from wallet import Wallet
+
 def test_add_txn():
     pool = txpool.Pool()
     txn1 = txn.Transaction("sender", "reciever", 10, 1)
@@ -13,6 +15,20 @@ def test_add_txn():
     assert pool.length() == 2
     with pytest.raises(ValueError) as e_info:
         pool.addTransaction(txn1)
+
+def test_secure_pool():
+
+    securePool = txpool.SecurePool()
+    alice = Wallet()
+    exchange = Wallet()
+
+    tx = txn.Transaction(exchange.publicKey, alice.publicKey,10, txn.TransactionType.EXCHANGE)
+    assert securePool.addTransaction(tx) == True
+    assert securePool.length() == 1
+
+    unsignedTx =  txn.Transaction("sender", "reciever", 10, 1)
+    assert securePool.addTransaction(unsignedTx) == False
+    assert securePool.length() == 1
 
 def test_delete():
     pool = txpool.Pool()
