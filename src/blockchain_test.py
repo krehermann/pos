@@ -1,11 +1,22 @@
 
+from Crypto.PublicKey import RSA
 import blockchain as bc
 import block
 import transactions as txn
 import transaction_pool
 
+
+
+testKeyStr = '''-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpQ2c9UvIiDOdU4i4yZG0Swyf2
+8ylVMePPSTL0Lqh3Z8gcorYbMLEalUjXPIvuIcdRzjzVUDFt9wWPE4m0InaZH/ul
+USpEiWpX6zbkrcXsSnVg6v4gHROrYoE0ZkvmuVUAKr/KhXe3S6SN75WQABJG9Ew9
+JhG1hlWvS9TiCqIr6QIDAQAB
+-----END PUBLIC KEY-----'''
+
+testKey = RSA.import_key(testKeyStr)
 def test_gensis():
-    chain = bc.Chain()
+    chain = bc.Chain(testKey)
     assert chain.length() ==1 
     g = chain.genesis
     assert g.payload.time == chain.genesisTimestamp
@@ -14,7 +25,7 @@ def test_gensis():
     assert g == chain.currentBlock()
 
 def test_addBlock():
-    chain = bc.Chain()
+    chain = bc.Chain(testKey)
     nextBlockPayload = block.Payload([],'forgername',chain.currentBlockHash())
     print(chain.currentBlockHash())
     print(nextBlockPayload.previousHash)
@@ -39,7 +50,7 @@ def test_covered():
     pool.addTransaction(ok_txn)
     pool.addTransaction(bad_txn)
     
-    chain = bc.Chain()
+    chain = bc.Chain(testKey)
     #this is weird. needs work. account creation should somehow be derived from wallet creation?
     chain.addAccount("exchange")
     chain.addAccount("reciever")

@@ -8,6 +8,7 @@ import argparse
 import node
 import server
 from p2p import SimplePeer
+import utils
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -22,12 +23,17 @@ if __name__ == '__main__':
 
     parser.add_argument('--peerHost', type=str, default=None)
     parser.add_argument('--peerPort', type=int, default=None)
-
+    parser.add_argument('--genesisPK', type=str, default=None)
     args = parser.parse_args()
     bootstrapPeer = None
+    genesisKeyPair = None
+    if args.genesisPK is not None:
+         genesisKeyPair = utils.keyFromFile(args.genesisPK)
+
     if args.peerHost is not None and args.peerPort is not None:
          bootstrapPeer = SimplePeer(args.peerHost,args.peerPort, "")
-    n = node.Node(host=args.p2phost, port=args.p2pport,peerHost=args.peerHost, peerPort=args.peerPort,debug=True)
+     
+    n = node.Node(host=args.p2phost, genesisKeyPair= genesisKeyPair,port=args.p2pport,peerHost=args.peerHost, peerPort=args.peerPort,debug=True)
     s = server.Server(host=args.apiHost, port=args.apiPort)
     ns = nodeServer.NodeServer(p2pnode=n,apiServer=s)
  

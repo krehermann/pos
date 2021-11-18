@@ -6,13 +6,15 @@ import json
 
 import block
 class Wallet:
-    def __init__(self):
-        self._keyPair = RSA.generate(2048)
+    def __init__(self, keyPair:RSA.RsaKey = None):
+        self._keyPair =keyPair
+        if keyPair is None:
+            self._keyPair = RSA.generate(2048) 
+
         self._signer = PKCS1_v1_5.new(self._keyPair)
-    
     @property
     def publicKey(self):
-        return self._keyPair.publickey().exportKey('PEM').decode('utf-8')
+        return self._keyPair.public_key().exportKey('PEM').decode('utf-8')
 
     def sign(self, data):
         hashed = utils.hash(data)

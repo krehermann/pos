@@ -32,3 +32,8 @@ def encode(data) -> str:
 def decode(data:str, classes=None):
     jsonpickle.set_decoder_options('simplejson')
     return jsonpickle.loads(data)
+
+def keyFromFile(filePath) -> RSA.RsaKey:
+    with open(filePath, 'r') as keyFile:
+        data = keyFile.read()
+        return RSA.importKey(data)

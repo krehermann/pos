@@ -1,16 +1,21 @@
 
+from types import TracebackType
 from typing import List
+
+from Crypto.PublicKey.RSA import RsaKey
 import block
 import utils
 from datetime import datetime, timezone
 import accounts
 import transactions as txn
 import json
+import stake
 
 class Chain:
-    def __init__(self) -> None:
-        self._GENESIS_FORGER = "genesis"
-        self._GENESIS_ID = "1234"
+    def __init__(self, genesisPublicKey:RsaKey) -> None:
+        self._GENESIS_FORGER =  genesisPublicKey.export_key("PEM").decode('utf-8')  #"genesis"
+        self._GENESIS_ID = utils.hash(self._GENESIS_FORGER).hexdigest()
+
         self._GENESIS_TIMESTAMP = datetime( 2021, 1, 1, 0, 0, 0, tzinfo=timezone.utc ).timestamp()
 
         self._genesis = self.createGenesis()
@@ -19,6 +24,7 @@ class Chain:
         # TODO learn more about real world account models
         self._accountBook = accounts.AccountBook()
 
+        self._txnPerBlock=1
     @property
     def genesis(self):
         return self._genesis
@@ -34,7 +40,9 @@ class Chain:
         return self._GENESIS_TIMESTAMP
 
     def createGenesis(self) -> block.Block:
-        genesisPayload = block.Payload([],self._GENESIS_FORGER,utils.hash(self._GENESIS_ID).hexdigest)
+        genesisStake = 100
+        genesisTransaction = txn.Transaction(self._GENESIS_FORGER,self._GENESIS_FORGER,genesisStake,txn.TransactionType.STAKE)
+        genesisPayload = block.Payload([genesisTransaction],self._GENESIS_FORGER,self._GENESIS_ID)
         genesisPayload.time = self._GENESIS_TIMESTAMP   
         b =  block.Block(genesisPayload)
         return b

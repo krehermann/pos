@@ -3,6 +3,8 @@ import uuid
 import json
 from enum import Enum
 
+from stake import Stake
+
 class Payload:
     
     def __init__(self,senderPublicKey, recieverPublicKey,amount, type):
@@ -19,6 +21,7 @@ class Payload:
 class TransactionType(str,Enum):
     TRANSFER = "TRANSFER"
     EXCHANGE = "EXCHANGE"
+    STAKE = "STAKE"
 
 
 
